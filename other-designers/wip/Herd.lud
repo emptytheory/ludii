@@ -21,7 +21,7 @@
 		(play
 			(move Add
 				(to (sites Empty))
-				(then ("RollDice"))
+				(then ("RollDice")) // Virker ikke. Har rapportert.
 			)
 		)
 		(end
