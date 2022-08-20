@@ -1,0 +1,148 @@
+(define "Exists"
+    (not
+        (or
+            (= #1 (centrePoint))
+            (= #1 (last To))
+        )
+    )
+)
+
+(define "UpdateAid"
+    (and {
+        (if
+            (and ("Exists" #1) (is Empty #1))
+            (add 
+                (piece "Dot1")
+                (to #1)
+            )
+        )
+        (if
+            (or
+                (= (id "Dot" P1) (what at:#1))
+                (= (id "Dot" P2) (what at:#1))
+            )
+            (add 
+                (piece "thinCross0")
+                (to #1 (apply (remove (to))))
+                
+            )
+        )
+        (if
+            (and ("Exists" #2) (is Empty #2))
+            (add
+                (piece "Dot2")
+                (to #2)
+            )
+        )
+        (if
+            (or
+                (= (id "Dot" P1) (what at:#2))
+                (= (id "Dot" P2) (what at:#2))
+            )
+            (add 
+                (piece "thinCross0")
+                (to #2 (apply (remove (to))))
+                
+            )
+        )
+    })
+)
+
+(game "Unknot"
+    (players 2)
+    (equipment
+        { 
+            (board (hex <Board>))
+            (piece "Disc" P1)
+            (piece "Dot" Each)
+            (piece "thinCross" Neutral)
+        }
+    )
+    (rules
+        (meta (swap))
+        (start 
+            (place "thinCross0" (centrePoint))
+        )
+        (play
+            (move Add 
+                (piece "Disc1")
+                (to
+                    (difference 
+                        (sites Board) 
+                        (centrePoint)
+                    )
+                    if:(and
+                        (!= 
+                            (id "Disc" P1) 
+                            (what
+                                at:(ahead (to) 
+                                    (if
+                                        (is Even (mover))
+                                        SSW
+                                        SSE
+                                    )
+                                )
+                            )
+                        )
+                        (!= 
+                            (id "Disc" P1) 
+                            (what at:(to))
+                        )
+                    )
+                    (apply (remove (to)))
+                )
+                (then ("UpdateAid" (ahead (last To) NNE) (ahead (last To) NNW)))
+            )
+        )
+        (end
+            (if 
+                (and
+                    (is Loop (id P1))
+                    (<
+                        0
+                        (count Sites
+                            in:(intersection
+                               (sites Loop
+                                   inside:True
+                                   (id P1)
+                               )
+                               (difference 
+                                   (sites Board)
+                                   (sites Occupied by:P1 component:"Disc")
+                               )
+                            )
+                        )
+                    )
+                )
+                (result Mover Win)
+            )
+        )
+    )
+)
+
+(option "Board Size" <Board> args:{ <size> }
+    {
+    (item "4"    <4>  "A base 4 board is currently selected")*
+    (item "5"    <5>  "A base 5 board is currently selected")
+    }
+)
+
+(metadata
+    (graphics {
+        (piece Colour "Disc1" fillColour:(colour Red))
+        (piece Colour P1 "Dot"
+            strokeColour:(colour 255 255 255 200)
+        )
+        (piece Colour P2 "Dot"
+            strokeColour:(colour 0 0 0 200)
+        )
+        (piece Colour Neutral "thinCross"
+            strokeColour:(colour 150 150 150 200)
+        )
+        (piece Scale "thinCross" 0.4)
+        (piece Scale "Dot" 0.4)
+        (region Colour (sites Board) (colour 250 210 148))
+        (board Colour InnerEdges (colour 178 151 100))    
+        (board Colour OuterEdges (colour 178 151 100))    
+    })
+)

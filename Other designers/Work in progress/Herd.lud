@@ -1,0 +1,49 @@
+(define "RollDice"
+	(and
+		(set State at:(handSite Shared 0) (value Random (range 1 6)))
+		(set State at:(handSite Shared 1) (value Random (range 1 6)))
+	)
+)
+
+(game "Herd"
+	(players 2)
+	(equipment {
+		(board (hex <Board:size>))
+		(piece "Disc" Each)
+		(piece "Square" Shared maxState:6)
+		(hand Shared size:2)
+	})
+	(rules
+		(start {
+			(place "Square" (handSite Shared 0) state:(value Random (range 1 6)))
+			(place "Square" (handSite Shared 1) state:(value Random (range 1 6)))
+		})
+		(play
+			(move Add
+				(to (sites Empty))
+				(then ("RollDice"))
+			)
+		)
+		(end
+			(if
+				(is Full)
+				(byScore)
+			)
+		)
+	)
+)
+
+(option "Board Size" <Board> args:{ <size> }
+    {
+    (item "3"    <3>  "A size 3 board is currently selected")
+    (item "4"    <4>  "A size 4 board is currently selected")*
+    (item "5"    <5>  "A size 5 board is currently selected")
+    (item "6"    <6>  "A size 6 board is currently selected")
+    }
+)
+
+(metadata
+    (graphics {
+        (show Piece State Shared Middle)
+    })
+)

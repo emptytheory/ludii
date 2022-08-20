@@ -1,0 +1,32 @@
+(game "Hadron"
+	(players 2)
+	(equipment {
+		(board (square <Board:size>))
+		(piece "Disc" Each)
+	})
+	(rules
+		(play
+			(move Add
+				(to (sites Empty)
+					if:(=
+						(count Sites in:(sites Around (to) Own Orthogonal))
+						(count Sites in:(sites Around (to) Enemy Orthogonal))
+					)
+				)
+			)
+		)
+		(end
+			(if
+				(no Moves Next)
+				(result Next Loss)
+			)
+		)
+	)
+)
+
+(option "Board Size" <Board> args:{ <size> }
+    {
+    (item "5"    <5>  "A size 5 board is currently selected")*
+    (item "7"    <7>  "A size 7 board is currently selected")
+    }
+)
