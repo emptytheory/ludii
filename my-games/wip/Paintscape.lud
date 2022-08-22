@@ -1,4 +1,4 @@
-(game "12x5"
+(game "Paintscape"
 	(players 2)
 	(equipment {
 		(board (square 8))
@@ -7,8 +7,7 @@
 	})
 	(rules
 		(start {
-			(place "Disc1" (intersection (sites Phase 0) (sites Incident Cell of:Vertex at:(centrePoint Vertex))))
-			(place "Disc2" (intersection (sites Phase 1) (sites Incident Cell of:Vertex at:(centrePoint Vertex))))
+			(place Random (sites Empty) {"Disc1" "Disc2"} count:2)
 			(place Random (sites Empty) {"Square"} count:12 state:1)
 			(place Random (sites Empty) {"Square"} count:12 state:2)
 			(place Random (sites Empty) {"Square"} count:12 state:3)
